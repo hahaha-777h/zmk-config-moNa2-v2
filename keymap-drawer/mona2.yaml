@@ -16,7 +16,7 @@ layers:
   - D
   - F
   - G
-  - ESC
+  - RCTRL
   - H
   - J
   - K
@@ -223,4 +223,4 @@ combos:
   k: '&mkp MB2'
   l: [default]
 - p: [38, 39]
-  k: sys
+  k: {t: ESC, h: sys}
