@@ -67,9 +67,12 @@
 &trackball_central_listener {
     status = "okay";
     device = <&trackball_central>;
+    input-processors =
+        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,       //Y軸反転（mona2.dtsi と同じ内容。ここで上書きするので再記述）
+        <&zip_temp_layer 1 0>;                              //ボールを動かしたらマウスレイヤ(1)へ。0=タイムアウトなし（英語/日本語コンボで抜ける）
 
     scroller {
-        layers = <3>;
+        layers = <4>;                                       //NAV レイヤ（mona2.keymap の #define NAV と合わせる）
         input-processors = 
             // <&zip_xy_transform INPUT_TRANSFORM_XY_SWAP>,        //X軸とY軸の入れ替え
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,       //X軸反転
