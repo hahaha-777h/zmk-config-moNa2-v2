@@ -38,11 +38,54 @@ layers:
   - LALT
   - LSHFT
   - LGUI
-  - {t: SPACE, h: nav}
-  - {t: INT5, h: sym}
-  - {t: INT4, h: num}
+  - nav
+  - {t: TAB, h: sym}
+  - {t: SPACE, h: num}
   - BSPC
   - {t: RET, h: RSHFT}
+  mouse:
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '&mkp MB1'
+  - '&mkp MB2'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   sym:
   - '!'
   - '@'
@@ -216,14 +259,17 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
 combos:
+- p: [12, 13]
+  k: INT5
+  l: [default]
+- p: [12, 13]
+  k: '&ime_en_exit'
+  l: [mouse]
 - p: [17, 18]
-  k: '&mkp MB1'
+  k: INT4
   l: [default]
-- p: [18, 19]
-  k: '&mkp MB2'
-  l: [default]
-- p: [11, 12]
-  k: TAB
-  l: [default]
+- p: [17, 18]
+  k: '&ime_ja_exit'
+  l: [mouse]
 - p: [38, 39]
   k: {t: ESC, h: sys}
