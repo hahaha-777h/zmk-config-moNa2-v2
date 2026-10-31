@@ -16,6 +16,8 @@
 #define NUM   3   // Spc長押し
 #define NAV   4   // 左手真ん中の親指（レイヤ専用）。押している間ボールがスクロールになる（mona2_r.overlay の scroller が layer 4 を見ている）
 #define SYS   5   // Tab+Spc 同時長押し
+#define WIN   6   // Windows モード（SYS 層の E でトグル。電源再投入で OFF に戻る）。親指列の Ctrl と Win(Cmd) を入れ替え、IME は 英数/ひらがな キーで切替。
+                  // 最上位層なので ON の間はコンボの判定層が常に WIN になる（layers = <WIN> のコンボが発火する）
 
 &mt {
     flavor = "balanced";
@@ -40,38 +42,40 @@
     combos {
         compatible = "zmk,combos";
 
-        // F + D 同時押しで英語（BASE）
-        ime_en {
-            bindings = <&kp INT5>;
-            key-positions = <12 13>;
-            layers = <BASE>;
-            timeout-ms = <50>;
-            require-prior-idle-ms = <100>;
-        };
+        // コンボは「一番上のアクティブ層」で判定されるので、Mac 用は BASE/MOUSE、Windows 用は WIN を指定する
 
-        // F + D 同時押しで英語 + マウスレイヤ終了（MOUSE）
-        ime_en_mouse {
+        // F + D 同時押しで英語（Mac: 英数 INT5）+ マウスレイヤ終了
+        ime_en {
             bindings = <&ime_en_exit>;
             key-positions = <12 13>;
-            layers = <MOUSE>;
+            layers = <BASE MOUSE>;
             timeout-ms = <50>;
             require-prior-idle-ms = <100>;
         };
 
-        // J + K 同時押しで日本語（BASE）
+        // J + K 同時押しで日本語（Mac: かな INT4）+ マウスレイヤ終了
         ime_ja {
-            bindings = <&kp INT4>;
-            key-positions = <17 18>;
-            layers = <BASE>;
-            timeout-ms = <50>;
-            require-prior-idle-ms = <100>;
-        };
-
-        // J + K 同時押しで日本語 + マウスレイヤ終了（MOUSE）
-        ime_ja_mouse {
             bindings = <&ime_ja_exit>;
             key-positions = <17 18>;
-            layers = <MOUSE>;
+            layers = <BASE MOUSE>;
+            timeout-ms = <50>;
+            require-prior-idle-ms = <100>;
+        };
+
+        // F + D 同時押しで英語（Windows JIS: 英数キー → 半角英数モード）+ マウスレイヤ終了
+        ime_en_win {
+            bindings = <&ime_en_win>;
+            key-positions = <12 13>;
+            layers = <WIN>;
+            timeout-ms = <50>;
+            require-prior-idle-ms = <100>;
+        };
+
+        // J + K 同時押しで日本語（Windows JIS: カタカナひらがなキー → ひらがな入力で IME オン）+ マウスレイヤ終了
+        ime_ja_win {
+            bindings = <&ime_ja_win>;
+            key-positions = <17 18>;
+            layers = <WIN>;
             timeout-ms = <50>;
             require-prior-idle-ms = <100>;
         };
@@ -84,22 +88,45 @@
     };
 
     macros {
-        // 英語にしてマウスレイヤを抜ける
+        // マウスレイヤを抜けるのは &tog_off（OFF にするだけ）。&tog だと MOUSE が OFF のとき逆に ON になってしまう
+
+        // 英語にしてマウスレイヤを抜ける（Mac）
         ime_en_exit: ime_en_exit {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp INT5>, <&tog MOUSE>;
+            bindings = <&kp INT5>, <&tog_off MOUSE>;
         };
 
-        // 日本語にしてマウスレイヤを抜ける
+        // 日本語にしてマウスレイヤを抜ける（Mac）
         ime_ja_exit: ime_ja_exit {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp INT4>, <&tog MOUSE>;
+            bindings = <&kp INT4>, <&tog_off MOUSE>;
+        };
+
+        // 英語にしてマウスレイヤを抜ける（Windows JIS: 英数キー）
+        ime_en_win: ime_en_win {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp CAPS>, <&tog_off MOUSE>;
+        };
+
+        // 日本語にしてマウスレイヤを抜ける（Windows JIS: カタカナひらがなキー）
+        ime_ja_win: ime_ja_win {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp INT2>, <&tog_off MOUSE>;
         };
     };
 
     behaviors {
+        // レイヤを OFF にするだけのトグル（マウスレイヤ終了用）
+        tog_off: tog_off {
+            compatible = "zmk,behavior-toggle-layer";
+            #binding-cells = <1>;
+            toggle-mode = "off";
+        };
+
         // Spc用のレイヤータップ：速く打っている最中は必ずスペースになる
         lt_spc: lt_spc {
             compatible = "zmk,behavior-hold-tap";
@@ -185,25 +212,37 @@
         };
 
         // 4: 移動（左手真ん中の親指）— この間ボールはスクロール
+        //    右手は逆T字：I=↑ / J=← K=↓ L=→、両端の H/; が Home/End、↑ の両脇の U/O が PgUp/PgDn
         nav_layer {
             bindings = <
-&trans           &trans    &trans    &trans    &trans                                    &kp HOME  &kp PG_DN &kp PG_UP  &kp END  &trans
-&kp LGUI         &kp LALT  &kp LCTRL &kp LSHFT &trans                        &trans      &kp LEFT  &kp DOWN  &kp UP     &kp RIGHT &trans
+&trans           &trans    &trans    &trans    &trans                                    &trans    &kp PG_UP &kp UP     &kp PG_DN &trans
+&kp LGUI         &kp LALT  &kp LCTRL &kp LSHFT &trans                        &trans      &kp HOME  &kp LEFT  &kp DOWN   &kp RIGHT &kp END
 &trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans    &trans    &trans     &trans   &trans
 &trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans                                   &trans
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;
         };
 
-        // 5: 設定（Tab＋Spc 同時長押し）
+        // 5: 設定（Tab＋Spc 同時長押し）— E で Windows モード ON/OFF
         sys_layer {
             bindings = <
-&out OUT_USB     &out OUT_BLE &trans &trans    &trans                                    &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4
+&out OUT_USB     &out OUT_BLE &tog WIN &trans  &trans                                    &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4
 &trans           &trans    &trans    &trans    &trans                        &trans      &trans    &trans    &trans     &trans   &trans
 &trans           &trans    &trans    &trans    &trans        &bootloader     &bootloader &trans    &trans    &trans     &trans   &bt BT_CLR
 &trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans                                   &trans
             >;
             sensor-bindings = <&scroll_up_down>;
+        };
+
+        // 6: Windows モード（SYS 層の E でトグル）— 親指列の Ctrl と Win(Cmd) を入れ替えるだけ。他は全て下の層のまま
+        //    sensor-bindings は書かない（最上位層なので書くとエンコーダを奪ってしまう。省略すれば下の層に任される）
+        win_layer {
+            bindings = <
+&trans           &trans    &trans    &trans    &trans                                    &trans    &trans    &trans     &trans   &trans
+&trans           &trans    &trans    &trans    &trans                        &trans      &trans    &trans    &trans     &trans   &trans
+&trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans    &trans    &trans     &trans   &trans
+&kp LGUI         &trans    &trans    &kp LCTRL &trans        &trans          &trans      &trans                                   &trans
+            >;
         };
     };
 };
