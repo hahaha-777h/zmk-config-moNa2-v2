@@ -11,7 +11,7 @@
 
 // レイヤー番号（番号が大きいレイヤが勝つ。MOUSE は一番下にして、押して出すレイヤに負けるようにする）
 #define BASE  0
-#define MOUSE 1   // ボールを動かすと自動で入る（mona2_r.overlay の zip_temp_layer が layer 1 を指す）。英語/日本語コンボで抜ける
+#define MOUSE 1   // ボールを動かすと自動で入る（mona2_r.overlay の zip_temp_layer が layer 1 を指す）。J/K・左親指修飾キー以外を押すか、英語/日本語コンボで抜ける
 #define SYM   2   // Tab長押し
 #define NUM   3   // Spc長押し
 #define NAV   4   // 左手真ん中の親指（レイヤ専用）。押している間ボールがスクロールになる（mona2_r.overlay の scroller が layer 4 を見ている）
@@ -27,9 +27,13 @@
     flavor = "balanced";
 };
 
-// オートマウスレイヤ：最後のキー入力から200ms以内のボール移動では入らない（文字入力中の誤発火防止）
+// オートマウスレイヤ：
+// - 最後のキー入力から200ms以内のボール移動では入らない（文字入力中の誤発火防止）
+// - excluded-positions に無いキーを押したら自動で抜ける（J/K=クリック と 左親指の Ctrl/Alt/Shift/Cmd は除外。修飾キー+クリックができるように）
+//   ※ excluded-positions が空だとキー押下による解除自体が無効になるので、必ず1つ以上入れておくこと
 &zip_temp_layer {
     require-prior-idle-ms = <200>;
+    excluded-positions = <17 18 33 34 35 36>;
 };
 
 / {
@@ -147,7 +151,7 @@
             sensor-bindings = <&scroll_up_down>;
         };
 
-        // 1: マウス（ボールを動かすと自動で入る）— J=左クリック, K=右クリック。英語/日本語コンボで抜ける
+        // 1: マウス（ボールを動かすと自動で入る）— J=左クリック, K=右クリック。J/K・左親指修飾キー以外を押すか、英語/日本語コンボで抜ける
         mouse_layer {
             bindings = <
 &trans           &trans    &trans    &trans    &trans                                    &trans    &trans    &trans     &trans   &trans
