@@ -213,12 +213,13 @@
 
         // 4: 移動（左手真ん中の親指）— この間ボールはスクロール
         //    右手は逆T字：I=↑ / J=← K=↓ L=→、両端の H/; が Home/End、↑ の両脇の U/O が PgUp/PgDn
+        //    Backspace の位置 = Delete（消す方向が右に変わるだけ）
         nav_layer {
             bindings = <
 &trans           &trans    &trans    &trans    &trans                                    &trans    &kp PG_UP &kp UP     &kp PG_DN &trans
 &kp LGUI         &kp LALT  &kp LCTRL &kp LSHFT &trans                        &trans      &kp HOME  &kp LEFT  &kp DOWN   &kp RIGHT &kp END
 &trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans    &trans    &trans     &trans   &trans
-&trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans                                   &trans
+&trans           &trans    &trans    &trans    &trans        &trans          &trans      &kp DEL                                  &trans
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;
         };
