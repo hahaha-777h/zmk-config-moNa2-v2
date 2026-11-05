@@ -95,7 +95,7 @@ layers:
   - {t: ▽, type: trans}
   - '['
   - ']'
-  - {t: ▽, type: trans}
+  - '#'
   - '%'
   - LGUI
   - LALT
@@ -103,11 +103,11 @@ layers:
   - LSHFT
   - '`'
   - {t: ▽, type: trans}
-  - '#'
+  - '-'
   - (
   - )
-  - \
-  - {t: ▽, type: trans}
+  - '='
+  - /
   - {t: ▽, type: trans}
   - '*'
   - ^
@@ -119,7 +119,7 @@ layers:
   - '{'
   - '}'
   - '|'
-  - {t: ▽, type: trans}
+  - \
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -188,7 +188,7 @@ layers:
   - LCTRL
   - LSHFT
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - DEL
   - HOME
   - LEFT
   - DOWN
@@ -213,7 +213,7 @@ layers:
   - {type: held}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - DEL
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   sys:
   - OUT USB
