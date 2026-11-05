@@ -190,11 +190,13 @@
         };
 
         // 2: 記号（Tab長押し）
+        //    右手ホームローに - = / を置く（H=- / L== / ;=/）。_ と + は Tab+F（Shift）+H / +L で打てる
+        //    # と \ はそれぞれ O と ' に逃がしてある。基本層の内側列の - / = はそのまま残している
         sym_layer {
             bindings = <
-&kp EXCL         &kp AT    &kp DLLR  &trans    &kp TILDE                               &trans    &kp LBKT  &kp RBKT   &trans   &kp PRCNT
-&kp LGUI         &kp LALT  &kp LCTRL &kp LSHFT &kp GRAVE                    &trans      &kp HASH  &kp LPAR  &kp RPAR   &kp BSLH &trans
-&trans           &kp STAR  &kp CARET &trans    &trans        &trans          &trans      &kp AMPS  &kp LBRC  &kp RBRC   &kp PIPE &trans
+&kp EXCL         &kp AT    &kp DLLR  &trans    &kp TILDE                               &trans    &kp LBKT  &kp RBKT   &kp HASH &kp PRCNT
+&kp LGUI         &kp LALT  &kp LCTRL &kp LSHFT &kp GRAVE                    &trans      &kp MINUS &kp LPAR  &kp RPAR   &kp EQUAL &kp SLASH
+&trans           &kp STAR  &kp CARET &trans    &trans        &trans          &trans      &kp AMPS  &kp LBRC  &kp RBRC   &kp PIPE &kp BSLH
 &trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans                                   &trans
             >;
             sensor-bindings = <&scroll_right_left>;
@@ -213,13 +215,13 @@
 
         // 4: 移動（左手真ん中の親指）— この間ボールはスクロール
         //    右手は逆T字：I=↑ / J=← K=↓ L=→、両端の H/; が Home/End、↑ の両脇の U/O が PgUp/PgDn
-        //    Backspace の位置 = Delete（消す方向が右に変わるだけ）
+        //    右手内側の中段（基本層の - の位置）= Delete。Backspace はそのままなので NAV+Alt(S)+Backspace の単語消しが効く
         nav_layer {
             bindings = <
 &trans           &trans    &trans    &trans    &trans                                    &trans    &kp PG_UP &kp UP     &kp PG_DN &trans
-&kp LGUI         &kp LALT  &kp LCTRL &kp LSHFT &trans                        &trans      &kp HOME  &kp LEFT  &kp DOWN   &kp RIGHT &kp END
+&kp LGUI         &kp LALT  &kp LCTRL &kp LSHFT &trans                        &kp DEL     &kp HOME  &kp LEFT  &kp DOWN   &kp RIGHT &kp END
 &trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans    &trans    &trans     &trans   &trans
-&trans           &trans    &trans    &trans    &trans        &trans          &trans      &kp DEL                                  &trans
+&trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans                                   &trans
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;
         };
