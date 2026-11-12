@@ -72,7 +72,7 @@
         <&zip_temp_layer 1 0>;                              //ボールを動かしたらマウスレイヤ(1)へ。0=タイムアウトなし（英語/日本語コンボで抜ける）
 
     scroller {
-        layers = <4>;                                       //NAV レイヤ（mona2.keymap の #define NAV と合わせる）
+        layers = <7>;                                      //NAV レイヤ（mona2.keymap の #define NAV と合わせる）
         input-processors = 
             // <&zip_xy_transform INPUT_TRANSFORM_XY_SWAP>,        //X軸とY軸の入れ替え
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,       //X軸反転

@@ -14,10 +14,18 @@
 #define MOUSE 1   // ボールを動かすと自動で入る（mona2_r.overlay の zip_temp_layer が layer 1 を指す）。J/K・左親指修飾キー以外を押すか、英語/日本語コンボで抜ける
 #define SYM   2   // Tab長押し
 #define NUM   3   // Spc長押し
-#define NAV   4   // 左手真ん中の親指（レイヤ専用）。押している間ボールがスクロールになる（mona2_r.overlay の scroller が layer 4 を見ている）
-#define SYS   5   // Tab+Spc 同時長押し
-#define WIN   6   // Windows モード（SYS 層の E でトグル。電源再投入で OFF に戻る）。親指列の Ctrl と Win(Cmd) を入れ替え、IME は 英数/ひらがな キーで切替。
-                  // 最上位層なので ON の間はコンボの判定層が常に WIN になる（layers = <WIN> のコンボが発火する）
+#define WIN   4   // Windows モード（SYS 層の E でトグル。電源再投入で OFF に戻る）。JIS 設定の Windows に繋いでも US 配列と同じ文字が出るようにする層。
+                  // 親指列の Ctrl と Win(Cmd) を入れ替え、基本層の記号を JIS 用に上書きし、Tab/Spc 長押しの行き先を SYM_W/NUM_W に変える。IME は 英数/ひらがな キーで切替。
+                  // MOUSE より上にあるので、ON の間はコンボの判定層が WIN になる（layers = <WIN> のコンボが発火する）
+#define SYM_W 5   // Windows モード中の記号層（WIN 層の Tab 長押し）。配置は SYM と同じで、中身が JIS 用のキー
+#define NUM_W 6   // Windows モード中の数字層（WIN 層の Spc 長押し）。配置は NUM と同じで、記号と Shift+数字が JIS 用
+#define NAV   7   // 左手真ん中の親指（レイヤ専用）。押している間ボールがスクロールになる（mona2_r.overlay の scroller が layer 7 を見ている）
+                  // WIN 層が基本層の - と ; を上書きするので、Delete / End が隠れないよう WIN より上に置く
+#define SYS   8   // Tab+Spc 同時長押し。BT_CLR が WIN 層の ' に隠れないよう WIN より上に置く
+#define WIN_SIGN 9 // LED 用の空の層。WIN と SYS が両方 ON のときだけ自動で入る（Tab+Spc 長押し中に Windows モードなら青く光る）
+
+// Shift（左右どちらでも）で送るキーを変える mod-morph 用
+#define SHIFTS (MOD_LSFT|MOD_RSFT)
 
 &mt {
     flavor = "balanced";
@@ -39,6 +47,16 @@
 };
 
 / {
+    // WIN と SYS が両方 ON の間だけ WIN_SIGN 層を出す（LED の色を付けるためだけの層）
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+
+        win_sign {
+            if-layers = <WIN SYS>;
+            then-layer = <WIN_SIGN>;
+        };
+    };
+
     combos {
         compatible = "zmk,combos";
 
@@ -149,6 +167,92 @@
             hold-trigger-key-positions = <0 1 2 3 4 10 11 12 13 14 21 22 23 24 25 26 33 34 35 36 37 38>;
         };
 
+        // ---- Windows(JIS) 用：Shift を押しているかで送るキーを変える ----
+        // 1つ目 = そのまま押したとき、2つ目 = Shift と一緒に押したとき。
+        // Shift 時は押している Shift を一旦外してから 2つ目を送る（LS(...) と書いたものは Shift 付きで送られる）
+        // キー名は US 配列での名前。JIS の Windows ではコメントの文字として受け取られる
+
+        // - と _（JIS: _ は「ろ」キー + Shift）
+        jis_mins: jis_mins {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp MINUS>, <&kp LS(INT1)>;
+            mods = <SHIFTS>;
+        };
+
+        // ; と :（JIS: : は ; の右隣のキー単体）
+        jis_semi: jis_semi {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp SEMI>, <&kp SQT>;
+            mods = <SHIFTS>;
+        };
+
+        // = と +（JIS: = は Shift+-、+ は Shift+;）
+        jis_eql: jis_eql {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LS(MINUS)>, <&kp LS(SEMI)>;
+            mods = <SHIFTS>;
+        };
+
+        // ' と "（JIS: ' は Shift+7、" は Shift+2）
+        jis_sqt: jis_sqt {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LS(N7)>, <&kp LS(N2)>;
+            mods = <SHIFTS>;
+        };
+
+        // 数字：Shift 時に US の記号を出す（1 3 4 5 は JIS も同じなので普通の &kp のまま）
+        // 2 → @（JIS: @ キー単体）
+        us_n2: us_n2 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp N2>, <&kp LBKT>;
+            mods = <SHIFTS>;
+        };
+
+        // 6 → ^（JIS: ^ キー単体）
+        us_n6: us_n6 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp N6>, <&kp EQUAL>;
+            mods = <SHIFTS>;
+        };
+
+        // 7 → &（JIS: Shift+6）
+        us_n7: us_n7 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp N7>, <&kp LS(N6)>;
+            mods = <SHIFTS>;
+        };
+
+        // 8 → *（JIS: Shift+:）
+        us_n8: us_n8 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp N8>, <&kp LS(SQT)>;
+            mods = <SHIFTS>;
+        };
+
+        // 9 → (（JIS: Shift+8）
+        us_n9: us_n9 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp N9>, <&kp LS(N8)>;
+            mods = <SHIFTS>;
+        };
+
+        // 0 → )（JIS: Shift+9）
+        us_n0: us_n0 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp N0>, <&kp LS(N9)>;
+            mods = <SHIFTS>;
+        };
+
         scroll_up_down: mouse_wheel_up_down {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
@@ -213,7 +317,48 @@
             sensor-bindings = <&scroll_up_down>;
         };
 
-        // 4: 移動（左手真ん中の親指）— この間ボールはスクロール
+        // 4: Windows モード（SYS 層の E でトグル）— JIS 設定の Windows で US 配列と同じ文字を出す
+        //    ・親指列の Ctrl と Win(Cmd) を入れ替え
+        //    ・基本層の記号 4 キー（- ; = '）を JIS 用に上書き
+        //    ・Tab 長押し → SYM_W、Spc 長押し → NUM_W（SYM / NUM の JIS 版）
+        //    他は全て下の層のまま。sensor-bindings は書かない（書くとエンコーダを奪ってしまう。省略すれば下の層に任される）
+        win_layer {
+            bindings = <
+&trans           &trans    &trans    &trans    &trans                                    &trans    &trans    &trans     &trans   &trans
+&trans           &trans    &trans    &trans    &trans                        &jis_mins   &trans    &trans    &trans     &trans   &jis_semi
+&trans           &trans    &trans    &trans    &trans        &trans          &jis_eql    &trans    &trans    &trans     &trans   &jis_sqt
+&kp LGUI         &trans    &trans    &kp LCTRL &trans        &lt SYM_W TAB   &lt_spc NUM_W SPACE &trans                        &trans
+            >;
+        };
+
+        // 5: 記号・Windows 用（WIN 層の Tab 長押し）— 配置は SYM 層と全く同じ。右のコメントが「実際に出る文字」
+        //    キー名は US 配列での名前なので見た目は別の記号だが、JIS の Windows が受け取ると狙った文字になる
+        sym_w_layer {
+            bindings = <
+// !             @         $                   ~                                                   [         ]          #        %
+&kp EXCL         &kp LBKT  &kp DLLR  &trans    &kp LS(EQUAL)                             &trans    &kp RBKT  &kp BSLH   &kp HASH &kp PRCNT
+//                                             `                                         -(_)      (         )          =(+)     /
+&kp LGUI         &kp LALT  &kp LCTRL &kp LSHFT &kp LS(LBKT)                  &trans      &jis_mins &kp LS(N8) &kp LS(N9) &jis_eql &kp SLASH
+//               *         ^                                                             &         {         }          |        \(¥)
+&trans           &kp LS(SQT) &kp EQUAL &trans  &trans        &trans          &trans      &kp LS(N6) &kp LS(RBKT) &kp LS(BSLH) &kp LS(INT3) &kp INT3
+&trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans                                   &trans
+            >;
+            sensor-bindings = <&scroll_right_left>;
+        };
+
+        // 6: 数字・Windows 用（WIN 層の Spc 長押し）— 配置は NUM 層と全く同じ
+        //    * と + を JIS 用にし、Shift+数字で US の記号（@ ^ & * ( )）が出るようにしてある
+        num_w_layer {
+            bindings = <
+&trans           &us_n7    &us_n8    &us_n9    &kp LS(SQT)                               &trans    &kp F7    &kp F8     &kp F9   &kp F12
+&trans           &kp N4    &kp N5    &us_n6    &kp LS(SEMI)                  &trans      &trans    &kp F4    &kp F5     &kp F6   &kp F11
+&trans           &kp N1    &us_n2    &kp N3    &kp SLASH     &trans          &trans      &trans    &kp F1    &kp F2     &kp F3   &kp F10
+&trans           &trans    &trans    &trans    &us_n0        &kp DOT         &trans      &trans                                   &trans
+            >;
+            sensor-bindings = <&scroll_up_down>;
+        };
+
+        // 7: 移動（左手真ん中の親指）— この間ボールはスクロール
         //    右手は逆T字：I=↑ / J=← K=↓ L=→、両端の H/; が Home/End、↑ の両脇の U/O が PgUp/PgDn
         //    右手内側の中段（基本層の - の位置）= Delete。Backspace はそのままなので NAV+Alt(S)+Backspace の単語消しが効く
         nav_layer {
@@ -226,7 +371,7 @@
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;
         };
 
-        // 5: 設定（Tab＋Spc 同時長押し）— E で Windows モード ON/OFF
+        // 8: 設定（Tab＋Spc 同時長押し）— E で Windows モード ON/OFF（ON の間は長押し中 LED が青く光る）
         sys_layer {
             bindings = <
 &out OUT_USB     &out OUT_BLE &tog WIN &trans  &trans                                    &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4
@@ -237,14 +382,15 @@
             sensor-bindings = <&scroll_up_down>;
         };
 
-        // 6: Windows モード（SYS 層の E でトグル）— 親指列の Ctrl と Win(Cmd) を入れ替えるだけ。他は全て下の層のまま
-        //    sensor-bindings は書かない（最上位層なので書くとエンコーダを奪ってしまう。省略すれば下の層に任される）
-        win_layer {
+        // 9: Windows モードの目印（LED 用）— WIN と SYS が両方 ON のときだけ自動で入る。キーは全部下の層のまま
+        //    mona2_r.conf でこの層だけ青にしてあるので、Tab+Spc 長押し中に Windows モードなら青く光る
+        //    sensor-bindings は書かない（書くとエンコーダを奪ってしまう）
+        win_sign_layer {
             bindings = <
 &trans           &trans    &trans    &trans    &trans                                    &trans    &trans    &trans     &trans   &trans
 &trans           &trans    &trans    &trans    &trans                        &trans      &trans    &trans    &trans     &trans   &trans
 &trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans    &trans    &trans     &trans   &trans
-&kp LGUI         &trans    &trans    &kp LCTRL &trans        &trans          &trans      &trans                                   &trans
+&trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans                                   &trans
             >;
         };
     };
