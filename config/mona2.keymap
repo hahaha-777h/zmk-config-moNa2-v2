@@ -361,10 +361,12 @@
         // 7: 移動（左手真ん中の親指）— この間ボールはスクロール
         //    右手は逆T字：I=↑ / J=← K=↓ L=→、両端の H/; が Home/End、↑ の両脇の U/O が PgUp/PgDn
         //    右手内側の中段（基本層の - の位置）= Delete。Backspace はそのままなので NAV+Alt(S)+Backspace の単語消しが効く
+        //    G = Tab。左手ホームローの修飾キーと組み合わせてウィンドウ切り替えに使う
+        //    （Windows: NAV+S+G = Alt+Tab / Mac: NAV+A+G = Cmd+Tab / 共通: NAV+D+G = Ctrl+Tab、F を足すと逆方向）
         nav_layer {
             bindings = <
 &trans           &trans    &trans    &trans    &trans                                    &trans    &kp PG_UP &kp UP     &kp PG_DN &trans
-&kp LGUI         &kp LALT  &kp LCTRL &kp LSHFT &trans                        &kp DEL     &kp HOME  &kp LEFT  &kp DOWN   &kp RIGHT &kp END
+&kp LGUI         &kp LALT  &kp LCTRL &kp LSHFT &kp TAB                       &kp DEL     &kp HOME  &kp LEFT  &kp DOWN   &kp RIGHT &kp END
 &trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans    &trans    &trans     &trans   &trans
 &trans           &trans    &trans    &trans    &trans        &trans          &trans      &trans                                   &trans
             >;
