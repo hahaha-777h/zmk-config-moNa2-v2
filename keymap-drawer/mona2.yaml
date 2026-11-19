@@ -316,7 +316,7 @@ layers:
   - LALT
   - LCTRL
   - LSHFT
-  - {t: ▽, type: trans}
+  - TAB
   - DEL
   - HOME
   - LEFT
